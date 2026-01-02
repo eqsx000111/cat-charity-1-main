@@ -1,0 +1,47 @@
+from datetime import datetime
+from typing import Optional
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models.charity_project import CharityProject
+from app.models.donation import Donation
+
+
+async def invest(
+        *,
+        new_project: Optional[CharityProject] = None,
+        new_donation: Optional[Donation] = None,
+        session: AsyncSession
+):
+    projects = await session.execute(
+        select(CharityProject)
+        .where(CharityProject.fully_invested == False)
+        .order_by(CharityProject.create_date)
+    )
+    projects = projects.scalars().all()
+    donations = await session.execute(
+        select(Donation)
+        .where(Donation.fully_invested == False)
+        .order_by(Donation.create_date)
+    )
+    donations = donations.scalars().all()
+
+    project_index = 0
+    donation_index = 0
+    while project_index < len(projects) and donation_index < len(donations):
+        project = projects[project_index]
+        donation = donations[donation_index]
+        project_need = project.full_amount - project.invested_amount
+        donation_free = donation.full_amount - donation.invested_amount
+        invested_amount = min(project_need, donation_free)
+        project.invested_amount += invested_amount
+        donation.invested_amount += invested_amount
+        now = datetime.now
+        if project.full_amount == invested_amount:
+            project.fully_invested = True
+            project.close_date = now
+            project_index += 1
+        if donation.full_amount == invested_amount:
+            donation.fully_invested = True
+            donation.close_date = now
+            donation_index += 1

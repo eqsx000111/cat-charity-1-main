@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import Integer, Boolean, DateTime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr
@@ -24,7 +25,7 @@ class AbstractBase(Base):
     invested_amount: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     fully_invested: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     create_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-    close_date: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    close_date: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
 
 engine = create_async_engine(settings.database_url)

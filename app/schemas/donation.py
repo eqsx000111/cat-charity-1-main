@@ -14,5 +14,5 @@ class DonationDB(DonationCreate):
     invested_amount: int
     fully_invested: bool
     create_date: datetime
-    close_date: datetime | None
+    close_date: Optional[datetime] = None
     model_config = ConfigDict(from_attributes=True)

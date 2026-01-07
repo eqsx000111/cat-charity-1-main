@@ -1,11 +1,15 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import Integer, Boolean, DateTime
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-
 from app.core.config import settings
+from sqlalchemy import Boolean, DateTime, Integer
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    Mapped,
+    declared_attr,
+    mapped_column
+)
 
 
 class Base(DeclarativeBase):
@@ -22,10 +26,25 @@ class AbstractBase(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     full_amount: Mapped[int] = mapped_column(Integer, nullable=False)
-    invested_amount: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    fully_invested: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    create_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-    close_date: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    invested_amount: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        nullable=False
+    )
+    fully_invested: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        nullable=False
+    )
+    create_date: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False
+    )
+    close_date: Mapped[Optional[datetime]] = mapped_column(
+        DateTime,
+        nullable=True
+    )
 
 
 engine = create_async_engine(settings.database_url)

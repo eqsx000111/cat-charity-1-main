@@ -29,7 +29,9 @@ httpcore==1.0.8
 httptools==0.4.0
 httpx==0.28.1
 idna==3.3
+importlib_metadata==8.7.1
 iniconfig==1.1.1
+isort==6.1.0
 Jinja2==3.1.6
 makefun==1.13.1
 Mako==1.2.0
@@ -68,7 +70,7 @@ rich==14.2.0
 shellingham==1.5.4
 six==1.16.0
 sniffio==1.2.0
-SQLAlchemy==2.0.29
+SQLAlchemy==2.0.30
 starlette==0.37.2
 toml==0.10.2
 tomli==2.0.1
@@ -81,3 +83,4 @@ uvloop==0.19.0
 virtualenv==20.26.1
 watchgod==0.8.2
 websockets==10.3
+zipp==3.23.0

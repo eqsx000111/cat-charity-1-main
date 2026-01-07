@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -8,9 +8,6 @@ from app.models.donation import Donation
 
 
 async def invest(
-        *,
-        new_project: Optional[CharityProject] = None,
-        new_donation: Optional[Donation] = None,
         session: AsyncSession
 ):
     projects = await session.execute(
@@ -36,12 +33,20 @@ async def invest(
         invested_amount = min(project_need, donation_free)
         project.invested_amount += invested_amount
         donation.invested_amount += invested_amount
-        now = datetime.now
-        if project.full_amount == invested_amount:
+        if project.invested_amount >= project.full_amount:
             project.fully_invested = True
-            project.close_date = now
+            project.close_date = datetime.now()
             project_index += 1
-        if donation.full_amount == invested_amount:
+        if donation.invested_amount >= donation.full_amount:
             donation.fully_invested = True
-            donation.close_date = now
+            donation.close_date = datetime.now()
             donation_index += 1
+
+        session.add(project)
+        session.add(donation)
+
+
+def recalculate_project_state(project: CharityProject) -> None:
+    if project.invested_amount >= project.full_amount:
+        project.fully_invested = True
+        project.close_date = datetime.now()

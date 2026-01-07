@@ -12,7 +12,9 @@ class CRUDBase:
             obj_id,
             session: AsyncSession
     ):
-        db_obj = await session.execute(select(self.model).where(self.model.id == obj_id))
+        db_obj = await session.execute(
+            select(self.model).where(self.model.id == obj_id)
+        )
         return db_obj.scalars().first()
 
     async def get_multi(
@@ -30,8 +32,7 @@ class CRUDBase:
         obj_in_data = obj_in.dict()
         db_obj = self.model(**obj_in_data)
         session.add(db_obj)
-        # await session.commit()
-        # await session.refresh(db_obj)
+        await session.flush()
         return db_obj
 
     async def update(
@@ -46,8 +47,6 @@ class CRUDBase:
             if field in update_data:
                 setattr(db_obj, field, update_data[field])
         session.add(db_obj)
-        # await session.commit()
-        # await session.refresh(db_obj)
         return db_obj
 
     async def remove(
@@ -56,5 +55,4 @@ class CRUDBase:
             session: AsyncSession
     ):
         await session.delete(db_obj)
-        # await session.commit()
         return db_obj

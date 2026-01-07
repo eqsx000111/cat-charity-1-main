@@ -3,12 +3,20 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.validators import (
+    check_name_duplicate,
+    check_project_can_be_deleted,
+    check_project_can_be_updated,
+    check_project_exists
+)
 from app.core.db import get_async_session
-from app.schemas.charity_project import CharityProjectDB, CharityProjectCreate, CharityProjectUpdate
 from app.crud.charity_project import charity_project_crud
-from app.api.validators import check_project_exists, check_fully_invested
-from app.services.investments import invest
-
+from app.schemas.charity_project import (
+    CharityProjectCreate,
+    CharityProjectDB,
+    CharityProjectUpdate
+)
+from app.services.investments import invest, recalculate_project_state
 
 router = APIRouter()
 SessionDep = Annotated[AsyncSession, Depends(get_async_session)]
@@ -32,8 +40,9 @@ async def create_new_charity_project(
     charity_project: CharityProjectCreate,
     session: SessionDep
 ):
+    await check_name_duplicate(charity_project.name, session)
     project = await charity_project_crud.create(charity_project, session)
-    await invest(session=session, new_project=charity_project)
+    await invest(session)
     await session.commit()
     await session.refresh(project)
     return project
@@ -50,9 +59,19 @@ async def update_charity_project(
     session: SessionDep
 ):
     project = await check_project_exists(project_id, session)
-    await check_fully_invested(project_id, session)
+    if obj_in.name is not None:
+        await check_name_duplicate(obj_in.name, session)
+    check_project_can_be_updated(project, obj_in)
     project = await charity_project_crud.update(project, obj_in, session)
-    await session.add(project)
+    recalculate_project_state(project)
     await session.commit()
     await session.refresh(project)
+    return project
+
+
+@router.delete('/{project_id}', response_model=CharityProjectDB)
+async def delete_charity_project(project_id: int, session: SessionDep):
+    project = await check_project_exists(project_id, session)
+    check_project_can_be_deleted(project)
+    project = await charity_project_crud.remove(project, session)
     return project

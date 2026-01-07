@@ -1,28 +1,30 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, PositiveInt
+from pydantic import BaseModel, ConfigDict, Field, PositiveInt
 
 
 class CharityProjectBase(BaseModel):
     name: str = Field(min_length=5, max_length=100)
     description: str = Field(min_length=10)
+    full_amount: PositiveInt
+    model_config = ConfigDict(from_attributes=True, extra='forbid')
 
 
 class CharityProjectCreate(CharityProjectBase):
-    full_amount: PositiveInt
+    pass
 
 
-class CharityProjectDB(CharityProjectCreate):
+class CharityProjectDB(CharityProjectBase):
     id: int
     invested_amount: int
     fully_invested: bool
     create_date: datetime
-    close_date: Optional[datetime]
-
+    close_date: Optional[datetime] = None
     model_config = ConfigDict(from_attributes=True)
 
 
 class CharityProjectUpdate(CharityProjectBase):
-    name: Optional[str] = Field(min_length=5, max_length=100)
-    description: Optional[str] = Field(min_length=10)
+    name: Optional[str] = Field(None, min_length=5, max_length=100)
+    description: Optional[str] = Field(None, min_length=10)
+    full_amount: Optional[PositiveInt] = None

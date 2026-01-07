@@ -1,7 +1,12 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, PositiveInt
+from pydantic import BaseModel, ConfigDict, PositiveInt
+
+
+class DonationBase(BaseModel):
+    full_amount: PositiveInt
+    comment: Optional[str] = None
 
 
 class DonationCreate(BaseModel):
@@ -9,10 +14,15 @@ class DonationCreate(BaseModel):
     comment: Optional[str] = None
 
 
-class DonationDB(DonationCreate):
+class DonationResponse(DonationBase):
+    id: int
+    create_date: datetime
+
+
+class DonationDB(DonationBase):
     id: int
     invested_amount: int
-    fully_invested: bool
+    fully_invested: Optional[bool] = False
     create_date: datetime
     close_date: Optional[datetime] = None
     model_config = ConfigDict(from_attributes=True)

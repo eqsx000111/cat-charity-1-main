@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Optional
 
-from app.core.config import settings
 from sqlalchemy import Boolean, DateTime, Integer
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import (
@@ -10,6 +9,8 @@ from sqlalchemy.orm import (
     declared_attr,
     mapped_column
 )
+
+from app.core.config import settings
 
 
 class Base(DeclarativeBase):

@@ -1,7 +1,8 @@
 from typing import Optional
 
-from app.constants import APP_TITLE, DATABASE_URL, DESCRIPTION
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from app.constants import APP_TITLE, DATABASE_URL, DESCRIPTION
 
 
 class Settings(BaseSettings):

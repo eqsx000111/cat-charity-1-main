@@ -1,3 +1,4 @@
+DATABASE_URL = 'sqlite+aiosqlite:///./fastapi.db'
 APP_TITLE = 'Благотворительный фонд поддержки котиков QRKot'
 DESCRIPTION = 'Сервис для поддержки котиков'
 

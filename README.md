@@ -39,6 +39,7 @@ Cat Charity — это REST API, который позволяет:
 
 ```bash
 git clone https://github.com/eqsx000111/cat-charity-1-main
+cd cat-charity-1-main
 ```
 
 ### 2. Создать и активировать виртуальное окружение
@@ -73,13 +74,6 @@ DATABASE_URL=sqlite+aiosqlite:///./cat_charity.db
 alembic upgrade head
 ```
 
-### Создание миграций
-
-```bash
-alembic revision --autogenerate -m "описание миграции"
-alembic upgrade head
-```
-
 ---
 
 ## Запуск сервера
@@ -88,10 +82,10 @@ alembic upgrade head
 uvicorn app.main:app --reload
 ```
 
-После запуска документация будет доступна по адресу:
+После запуска документация будет доступна по:
 
-* Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-* ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+* [Swagger UI](http://127.0.0.1:8000/docs)
+* [ReDoc](http://127.0.0.1:8000/redoc)
 
 
 ## Автор

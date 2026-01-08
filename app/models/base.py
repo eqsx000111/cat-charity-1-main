@@ -2,19 +2,13 @@ from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import Boolean, DateTime, Integer
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import (
-    DeclarativeBase,
     Mapped,
     declared_attr,
     mapped_column
 )
 
-from app.core.config import settings
-
-
-class Base(DeclarativeBase):
-    pass
+from app.core.db import Base
 
 
 class AbstractBase(Base):
@@ -47,11 +41,10 @@ class AbstractBase(Base):
         nullable=True
     )
 
+    def recalculate_state(self) -> None:
+        if self.invested_amount >= self.full_amount:
+            self.fully_invested = True
+            self.close_date = datetime.now()
 
-engine = create_async_engine(settings.database_url)
-AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
-
-
-async def get_async_session():
-    async with AsyncSessionLocal() as async_session:
-        yield async_session
+    def __repr__(self):
+        return f'<{self.__class__.__name__} ID: {self.id}>'

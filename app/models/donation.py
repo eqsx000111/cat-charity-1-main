@@ -1,7 +1,7 @@
 from sqlalchemy import Text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.core.db import AbstractBase
+from .base import AbstractBase
 
 
 class Donation(AbstractBase):

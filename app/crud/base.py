@@ -7,6 +7,17 @@ class CRUDBase:
     def __init__(self, model):
         self.model = model
 
+    async def get_open(
+            self,
+            session: AsyncSession
+    ):
+        obj = await session.execute(
+            select(self.model)
+            .where(self.model.fully_invested.is_(False))
+            .order_by(self.model.create_date)
+        )
+        return obj.scalars().all()
+
     async def get(
             self,
             obj_id,

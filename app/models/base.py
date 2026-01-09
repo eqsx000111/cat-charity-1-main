@@ -6,6 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.db import Base
 
+REPR_TEMPLATE = '{name} id={id} full={full} invest={invest} closed={closed}'
+
 
 class AbstractBase(Base):
 
@@ -38,10 +40,10 @@ class AbstractBase(Base):
             self.close_date = datetime.now()
 
     def __repr__(self):
-        return (
-            f'{type(self).__name__} '
-            f'id={self.id} '
-            f'full={self.full_amount} '
-            f'invested={self.invested_amount} '
-            f'closed={self.fully_invested} '
+        return REPR_TEMPLATE.format(
+            name=type(self),
+            id=self.id,
+            full=self.full_amount,
+            invest=self.invested_amount,
+            closed=self.fully_invested
         )

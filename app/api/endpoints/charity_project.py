@@ -43,8 +43,9 @@ async def create_new_charity_project(
 ):
     await check_name_duplicate(charity_project.name, session)
     project = await charity_project_crud.create(charity_project, session)
-    sources = await donation_crud.get_open(session)
-    invest(target=project, sources=sources)
+    donations = await donation_crud.get_open(session)
+    modified = invest(target=project, sources=donations)
+    session.add_all(modified)
     await session.commit()
     await session.refresh(project)
     return project

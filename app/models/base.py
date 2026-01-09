@@ -2,11 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import Boolean, DateTime, Integer
-from sqlalchemy.orm import (
-    Mapped,
-    declared_attr,
-    mapped_column
-)
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.db import Base
 
@@ -15,11 +11,6 @@ class AbstractBase(Base):
 
     __abstract__ = True
 
-    @declared_attr
-    def __tablename__(cls):
-        return cls.__name__.lower()
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     full_amount: Mapped[int] = mapped_column(Integer, nullable=False)
     invested_amount: Mapped[int] = mapped_column(
         Integer,
@@ -47,4 +38,10 @@ class AbstractBase(Base):
             self.close_date = datetime.now()
 
     def __repr__(self):
-        return f'<{self.__class__.__name__} ID: {self.id}>'
+        return (
+            f'{type(self).__name__} '
+            f'id={self.id} '
+            f'full={self.full_amount} '
+            f'invested={self.invested_amount} '
+            f'closed={self.fully_invested} '
+        )

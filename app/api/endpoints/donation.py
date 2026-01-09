@@ -29,8 +29,9 @@ async def get_donations(session: SessionDep):
 )
 async def create_donation(donation: DonationCreate, session: SessionDep):
     donation = await donation_crud.create(donation, session)
-    target = await charity_project_crud.get_open(session)
-    invest(target=donation, sources=target)
+    projects = await charity_project_crud.get_open(session)
+    modified = invest(target=donation, sources=projects)
+    session.add_all(modified)
     await session.commit()
     await session.refresh(donation)
     return donation

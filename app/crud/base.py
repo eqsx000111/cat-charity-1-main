@@ -11,29 +11,26 @@ class CRUDBase:
             self,
             session: AsyncSession
     ):
-        obj = await session.execute(
+        return (await session.execute(
             select(self.model)
             .where(self.model.fully_invested.is_(False))
             .order_by(self.model.create_date)
-        )
-        return obj.scalars().all()
+        )).scalars().all()
 
     async def get(
             self,
             obj_id,
             session: AsyncSession
     ):
-        db_obj = await session.execute(
+        return (await session.execute(
             select(self.model).where(self.model.id == obj_id)
-        )
-        return db_obj.scalars().first()
+        )).scalars().first()
 
     async def get_multi(
             self,
             session: AsyncSession
     ):
-        db_objs = await session.execute(select(self.model))
-        return db_objs.scalars().all()
+        return (await session.execute(select(self.model))).scalars().all()
 
     async def create(
             self,
